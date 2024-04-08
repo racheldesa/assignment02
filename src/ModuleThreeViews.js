@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Shop from './Shop'
 
 function ThreeViews() {
     const [firstView, setFirstView] = useState(true);
@@ -9,6 +10,7 @@ function ThreeViews() {
         return (
             <div>
                 <h1>Shop View</h1>
+                <Shop />
             </div>
         )
     };
@@ -49,10 +51,13 @@ function ThreeViews() {
 
     return (
         <div>
-            <button type="button" class="btn btn-primary" onClick={setView1}>One</button>
-            <button type="button" class="btn btn-primary" onClick={setView2}>Two</button>
-            <button type="button" class="btn btn-primary" onClick={setView3}>Three</button>
-
+            <span class="border border-white">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onClick={setView1}>Shop</button>
+                <button type="button" class="btn btn-primary" onClick={setView2}>Cart</button>
+                <button type="button" class="btn btn-primary" onClick={setView3}>Checkout</button>
+            </div>
+            </span>
             {firstView && <View1 />}
             {secondView && <View2 />}
             {thirdView && <View3 />}
