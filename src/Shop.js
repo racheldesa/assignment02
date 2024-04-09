@@ -25,6 +25,14 @@ const Shop = () => {
         </div>
     ));
 
+    const cartItems = cart.map((el) => (
+        <div key={el.id}>
+            <img class="img-fluid" src={el.image} width={150} />
+            {el.title}
+            ${el.price}
+        </div>
+    ));
+
     const addToCart = (el) => {
         setCart([...cart, el]);
     };
@@ -37,7 +45,9 @@ const Shop = () => {
 
     return (
         <div>
-            {listItems}
+            <div>{listItems}</div>
+            <div>Items in Cart: </div>
+            <div>{cartItems}</div>
         </div>
     )
 }
