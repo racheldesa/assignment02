@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Cart from './Cart';
 import {Products} from './Products';
 import {Categories} from './Categories';
 import items from "./products.json";
@@ -43,6 +42,9 @@ function ProductCatalog() {
             let newCart = cart.map((nextItem => {
                 if (nextItem.id === el.id) {
                     inCart = true;
+                    let newCartTotal = cartTotal;
+                    newCartTotal =  newCartTotal + el.price;
+                    setCartTotal(newCartTotal);
                     return {
                         ...nextItem, count : nextItem.count + 1,
                     }
@@ -53,6 +55,9 @@ function ProductCatalog() {
             if (!inCart) {
                 let returnEl = el;
                 returnEl.count = 1;
+                let newCartTotal = cartTotal;
+                newCartTotal =  newCartTotal + returnEl.price;
+                setCartTotal(newCartTotal)
                 setCart([...cart, returnEl]);
             } else {
                 setCart(newCart);
@@ -69,6 +74,9 @@ function ProductCatalog() {
                         removeObject = true;
                         return nextItem;
                     } else {
+                        let newCartTotal = cartTotal;
+                        newCartTotal =  newCartTotal - nextItem.price;
+                        setCartTotal(newCartTotal);
                         return {
                             ...nextItem, count : nextItem.count - 1
                         }
@@ -81,6 +89,9 @@ function ProductCatalog() {
                 if (removeObject) {
                     let hardCopy = [...cart];
                     hardCopy = hardCopy.filter((cartItem) => cartItem.id !== el.id);
+                    let newCartTotal = cartTotal;
+                    newCartTotal =  newCartTotal - el.price;
+                    setCartTotal(newCartTotal);
                     setCart(hardCopy);
                 } else {
                     setCart(newCart);
@@ -98,14 +109,20 @@ function ProductCatalog() {
             </div>
         )
     }
-    const cartItems = cart.map((el) => (
-        <div key={el.id}>
-            <img class="img-fluid" src={el.image} width={150} />
-            {el.title} <br/>
-            ${el.price} <br/>
-            {el.count} <br/>
-        </div>
-    ));
+    const Cart = () => {
+        const cartItems = cart.map((el) => (
+            <div class="row" key={el.id}>
+                <div class="col">{el.title}</div>
+                <div class="col">${el.price}</div>
+                <div class="col">{el.count}</div>
+                <div class="col">{el.description}</div>
+                <div class="col"><img class="img-fluid" src={el.image} width={150} /></div>
+            </div>
+        ));
+        return (
+            {cartItems}
+        )
+    }
 
     function goToCart() {
         setView(1);
@@ -125,7 +142,6 @@ function ProductCatalog() {
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleChange} />
                     <Shop />
                 </div>
-                <div>{cartItems}</div>
                 <button type="button" class="btn btn-primary" onClick={goToCart}>View Cart</button>
             </div>
         );
@@ -134,9 +150,19 @@ function ProductCatalog() {
     function CartView () {
         return (
             <div>
-                <p>Cart Function</p>
-                <Cart />
-                <div>{cartItems}</div>
+                <h2>My Cart</h2>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">Name</div>
+                        <div class="col">Price</div>
+                        <div class="col">Count</div>
+                        <div class="col">Description</div>
+                        <div class="col"></div>
+                    </div>
+                    <Cart />
+                </div>
+                <div>{Cart.cartItems}</div>
+                <div>Total: ${cartTotal}</div>
                 <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
         );
