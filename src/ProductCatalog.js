@@ -40,22 +40,29 @@ function ProductCatalog() {
     
         const addToCart = (el) => {
             let inCart = false;
-            for (let item in cartItems) {
-                if (item.id == el.id) {
-                    item.rating.count += 1;
+            for (let i = 0; i < cart.length; i++) {
+                if (cart[i].id === el.id) {
+                    const newCart = cart.map((item, index) => {
+                        if (index === i) {
+                            item.rating.count += 1;
+                            return item;
+                        } else {
+                            return item;
+                        }
+                    })
+                    setCart(newCart);
                     inCart = true;
-                    break;
                 }
             }
             if (!inCart) {
                 let returnEl = el;
                 returnEl.rating.count = 1;
                 setCart([...cart, returnEl]);
-            }
+            } 
         };
     
         const removeFromCart = (el) => {
-            for (let item in cartItems) {
+            for (let item in cart) {
                 if (item.id == el.id) {
                     if (item.rating.count < 2) {
                         let hardCopy = [...cart];
