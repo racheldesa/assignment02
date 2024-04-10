@@ -40,38 +40,48 @@ function ProductCatalog() {
     
         const addToCart = (el) => {
             let inCart = false;
-            for (let i = 0; i < cart.length; i++) {
-                if (cart[i].id === el.id) {
-                    const newCart = cart.map((item, index) => {
-                        if (index === i) {
-                            item.rating.count += 1;
-                            return item;
-                        } else {
-                            return item;
-                        }
-                    })
-                    setCart(newCart);
+            let newCart = cart.map((nextItem => {
+                if (nextItem.id === el.id) {
                     inCart = true;
+                    return {
+                        ...nextItem, count : nextItem.count + 1,
+                    }
+                } else {
+                    return nextItem;
                 }
-            }
+            }))
             if (!inCart) {
                 let returnEl = el;
-                returnEl.rating.count = 1;
+                returnEl.count = 1;
                 setCart([...cart, returnEl]);
-            } 
+            } else {
+                setCart(newCart);
+            }
         };
     
         const removeFromCart = (el) => {
-            for (let item in cart) {
-                if (item.id == el.id) {
-                    if (item.rating.count < 2) {
-                        let hardCopy = [...cart];
-                        hardCopy = hardCopy.filter((cartItem) => cartItem.id !== el.id);
-                        setCart(hardCopy);
+            let inCart = false;
+            let removeObject = false;
+            let newCart = cart.map((nextItem => {
+                if (nextItem.id === el.id) {
+                    inCart = true;
+                    if (nextItem.count < 2) {
+                        removeObject = true;
+                        return nextItem;
                     } else {
-                        item.rating.count -= 1;
-                        break;
+                        return {
+                            ...nextItem, count : nextItem.count - 1
+                        }
                     }
+                }
+            }))
+            if (inCart) {
+                if (removeObject) {
+                    let hardCopy = [...cart];
+                    hardCopy = hardCopy.filter((cartItem) => cartItem.id !== el.id);
+                    setCart(hardCopy);
+                } else {
+                    setCart(newCart);
                 }
             }
         };
@@ -91,7 +101,7 @@ function ProductCatalog() {
             <img class="img-fluid" src={el.image} width={150} />
             {el.title} <br/>
             ${el.price} <br/>
-            {el.rating.count} <br/>
+            {el.count} <br/>
         </div>
     ));
 
