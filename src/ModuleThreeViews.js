@@ -3,6 +3,7 @@ import Shop from './Shop';
 import Cart from './Cart';
 import {Products} from './Products';
 import {Categories} from './Categories';
+import {Payment} from './Payment.js';
 
 function ThreeViews() {
     const [firstView, setFirstView] = useState(true);
@@ -10,6 +11,9 @@ function ThreeViews() {
     const [thirdView, setThirdView] = useState(false);
     const [query, setQuery] = useState('');
     const [ProductsCategory, setProductsCategory] = useState(Products);
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [dataF,setDataF] = useState({})
+    const [viewer,setViewer] = useState(0);
 
     function View1() {
         return (
@@ -30,10 +34,28 @@ function ThreeViews() {
     function View3() {
         return (
             <div>
-                <h1>Confirmation View</h1>
+                <Payment />
+                <Summary />
             </div>
         )
     };
+
+    function Summary() {
+        const updateHooks = () => {
+            setViewer(0);
+            setDataF({});
+        }
+        return (
+            <div>
+                <h1>Payment summary: </h1>
+                <h3>{dataF.lastName}, {dataF.firstName}</h3>
+                <p>{dataF.email}</p>
+                <p>{dataF.address}</p>
+                <p>{dataF.city},{dataF.state} {dataF.zip}</p>
+                <button onClick={updateHooks} className="btn btn-secondary">Submit</button>
+            </div>
+        )
+    }
 
     const setView1 = () => {
         if (firstView === false) {
