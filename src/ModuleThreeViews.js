@@ -5,54 +5,49 @@ import {Products} from './Products';
 import {Categories} from './Categories';
 
 function ThreeViews() {
-    const [firstView, setFirstView] = useState(true);
-    const [secondView, setSecondView] = useState(false);
-    const [thirdView, setThirdView] = useState(false);
+    const [view, setView] = useState(0); // 0 --> Shop, 1 --> Cart, 2 --> Confirmation
     const [query, setQuery] = useState('');
     const [ProductsCategory, setProductsCategory] = useState(Products);
 
-    function View1() {
-        return (
-            <div>
-                <h1>Shop View</h1>
-                <Shop />
-            </div>
-        )
-    };
-    function View2() {
-        return (
-            <div>
-                <h1>Cart View</h1>
-                <Cart />
-            </div>
-        )
-    };
-    function View3() {
-        return (
-            <div>
-                <h1>Confirmation View</h1>
-            </div>
-        )
-    };
-
-    const setView1 = () => {
-        if (firstView === false) {
-            setFirstView(true);
-        }
-        setSecondView(false);
-        setThirdView(false);
+    function goToCart() {
+        setView(1);
+    }
+    function confirm() {
+        setView(2);
+    }
+    function backToBrowse() {
+        setView(0);
     }
 
-    const setView2 = () => {
-        if (secondView === false) setSecondView(true);
-        setFirstView(false);
-        setThirdView(false);
+    function Browse() {
+        return (
+            <div>
+                <p>Browse Function</p>
+                <div className="py-10">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleChange} />
+            </div>
+                <button type="button" class="btn btn-primary" onClick={goToCart}>View Cart</button>
+            </div>
+        );
     }
 
-    const setView3 = () => {
-        if (thirdView === false) setThirdView(true);
-        setFirstView(false);
-        setSecondView(false);
+    function Cart () {
+        return (
+            <div>
+                <p>Cart Function</p>
+                <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
+            </div>
+        );
+
+    }
+
+    function Confirmation () {
+        return (
+            <div>
+                <p>Confirmation Function</p>
+                <button type="button" class="btn btn-primary" onClick={backToBrowse}>Back to Browse</button>
+            </div>
+        );
     }
 
     const handleChange = (e) => {
@@ -68,17 +63,14 @@ function ThreeViews() {
         <div>
             <span class="border border-white">
             <div class="btn-group">
-                <button type="button" class="btn btn-primary" onClick={setView1}>Shop</button>
-                <button type="button" class="btn btn-primary" onClick={setView2}>Cart</button>
-                <button type="button" class="btn btn-primary" onClick={setView3}>Checkout</button>
+                <button type="button" class="btn btn-primary" onClick={backToBrowse}>Shop</button>
+                <button type="button" class="btn btn-primary" onClick={goToCart}>Cart</button>
+                <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
             </span>
-            <div className="py-10">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleChange} />
-            </div>
-            {firstView && <View1 />}
-            {secondView && <View2 />}
-            {thirdView && <View3 />}
+            {view == 0 && <Browse />}
+            {view == 1 && <Cart />}
+            {view == 2 && <Confirmation />}
         </div>
     );
 }
