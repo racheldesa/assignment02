@@ -19,29 +19,32 @@ function ThreeViews() {
         setView(0);
     }
 
-    function Browse() {
+    function ShopView() {
         return (
             <div>
                 <p>Browse Function</p>
                 <div className="py-10">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleChange} />
+                <Shop />
             </div>
                 <button type="button" class="btn btn-primary" onClick={goToCart}>View Cart</button>
             </div>
         );
     }
 
-    function Cart () {
+    function CartView () {
         return (
             <div>
                 <p>Cart Function</p>
+                <Cart />
+                <div>{Shop.cartItems}</div>
                 <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
         );
 
     }
 
-    function Confirmation () {
+    function CheckoutView () {
         return (
             <div>
                 <p>Confirmation Function</p>
@@ -68,9 +71,9 @@ function ThreeViews() {
                 <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
             </span>
-            {view == 0 && <Browse />}
-            {view == 1 && <Cart />}
-            {view == 2 && <Confirmation />}
+            {view == 0 && <ShopView />}
+            {view == 1 && <CartView />}
+            {view == 2 && <CheckoutView />}
         </div>
     );
 }
