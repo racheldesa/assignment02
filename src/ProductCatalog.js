@@ -73,6 +73,8 @@ function ProductCatalog() {
                             ...nextItem, count : nextItem.count - 1
                         }
                     }
+                } else {
+                    return nextItem;
                 }
             }))
             if (inCart) {
