@@ -38,18 +38,9 @@ function ProductCatalog() {
             </div>
         ));
     
-        const cartItems = cart.map((el) => (
-            <div key={el.id}>
-                <img class="img-fluid" src={el.image} width={150} />
-                {el.title}
-                ${el.price}
-                {el.rating.count}
-            </div>
-        ));
-    
         const addToCart = (el) => {
             let inCart = false;
-            for (let item in cart) {
+            for (let item in cartItems) {
                 if (item.id == el.id) {
                     item.rating.count += 1;
                     inCart = true;
@@ -58,13 +49,13 @@ function ProductCatalog() {
             }
             if (!inCart) {
                 let returnEl = el;
-                returnEl.rating.count = 0;
+                returnEl.rating.count = 1;
                 setCart([...cart, returnEl]);
             }
         };
     
         const removeFromCart = (el) => {
-            for (let item in cart) {
+            for (let item in cartItems) {
                 if (item.id == el.id) {
                     if (item.rating.count < 2) {
                         let hardCopy = [...cart];
@@ -88,6 +79,14 @@ function ProductCatalog() {
             </div>
         )
     }
+    const cartItems = cart.map((el) => (
+        <div key={el.id}>
+            <img class="img-fluid" src={el.image} width={150} />
+            {el.title} <br/>
+            ${el.price} <br/>
+            {el.rating.count} <br/>
+        </div>
+    ));
 
     function goToCart() {
         setView(1);
@@ -107,7 +106,7 @@ function ProductCatalog() {
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleChange} />
                     <Shop />
                 </div>
-                <div>{Shop.cartItems}</div>
+                <div>{cartItems}</div>
                 <button type="button" class="btn btn-primary" onClick={goToCart}>View Cart</button>
             </div>
         );
@@ -118,7 +117,7 @@ function ProductCatalog() {
             <div>
                 <p>Cart Function</p>
                 <Cart />
-                <div>{Shop.cartItems}</div>
+                <div>{cartItems}</div>
                 <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
         );
@@ -152,9 +151,9 @@ function ProductCatalog() {
                 <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
             </span>
-            {view == 0 && <ShopView />}
-            {view == 1 && <CartView />}
-            {view == 2 && <CheckoutView />}
+            {view === 0 && <ShopView />}
+            {view === 1 && <CartView />}
+            {view === 2 && <CheckoutView />}
         </div>
     );
 }
