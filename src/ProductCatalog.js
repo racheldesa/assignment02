@@ -6,12 +6,11 @@ import { useForm } from "react-hook-form";
 function ProductCatalog() {
     const [view, setView] = useState(0); // 0 --> Shop, 1 --> Cart, 2 --> Checkout
     const [query, setQuery] = useState('');
-    const [apiQuery, setApiQuery] = useState('');
     const [ProductsCategory, setProductsCategory] = useState(Products);
     const [cart, setCart] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
+    const [dataF, setDataF] = useState({});
     const {register, handleSubmit, formState: {errors}} = useForm();
-    const {dataF, setDataF} = useState({});
 
     // Shop function for Browse
     const Shop = () => {
@@ -122,8 +121,8 @@ function ProductCatalog() {
     }
     // Function for Payment in Cart View
     function Payment () {
-        const onSubmit = (data) => {
-            console.log( data );
+        const onSubmit = data => {
+            console.log(data);
             setDataF(data);
             confirm();
         }
@@ -134,7 +133,7 @@ function ProductCatalog() {
                         <div class="row">
                             <div class="col">
                                 <div  className="form-group">
-                                    <input {...register("fullName", {required: true})} placeholder="Full Name" className="form-control" />
+                                    <input {...register("fullName", {required: true})} type="text" placeholder="Full Name" className="form-control" />
                                     {errors.fullName && <p className="text-danger">Full Name is required.</p>}
                                 </div>
                             </div>
@@ -148,7 +147,7 @@ function ProductCatalog() {
                     </div>
                     <div class="container">
                         <div className="form-group" class="mb-4">
-                            <input {...register("creditCard", {required: true})} placeholder="Credit Card" className="form-control" />
+                            <input {...register("creditCard", {required: true})} type="number" placeholder="Credit Card" className="form-control" />
                             {errors.creditCard && <p className="text-danger">Credit Card is required.</p>}
                         </div>
                     </div>
@@ -156,7 +155,7 @@ function ProductCatalog() {
                         <div class="row">
                             <div class="col">
                                 <div className="form-group">
-                                    <input {...register("address", {required: true})} placeholder="Address" className="form-control" />
+                                    <input {...register("address", {required: true, pattern:"\d{5,5}(-\d{4,4})?"})} placeholder="Address" className="form-control" />
                                     {errors.address && <p className="text-danger">Address is required.</p>}
                                 </div>
                             </div>
@@ -183,7 +182,7 @@ function ProductCatalog() {
                             </div>
                             <div class="col">
                                 <div className="form-group">
-                                    <input {...register("zip", {required: true})} placeholder="Zip"className="form-control" />
+                                    <input {...register("zip", {required: true, pattern:"/^[0-9\b]+$/"})} type="number" placeholder="Zip"className="form-control" />
                                     {errors.zip && <p className="text-danger">Zip is required.</p>}
                                 </div>
                             </div>
@@ -202,14 +201,23 @@ function ProductCatalog() {
         setView(2);
     }
     function backToBrowse() {
+        setCart([]);
+        setCartTotal(0);
+        setDataF({});
         setView(0);
     }
 
     function ShopView() {
         return (
             <div>
+                <span class="border border-white">
+                    <div class="btn-group mb-4">
+                        <button type="button" class="btn btn-primary border" onClick={backToBrowse}>Shop</button>
+                        <button type="button" class="btn btn-primary border" onClick={goToCart}>Cart</button>
+                    </div>
+                </span>
                 <div className="py-10">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleSearch} />
+                    <input class="form-control mr-sm-2 mb-4" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleSearch} />
                     <Shop />
                 </div>
                 <button type="button" class="btn btn-primary" onClick={goToCart}>View Cart</button>
@@ -220,6 +228,14 @@ function ProductCatalog() {
     function CartView () {
         return (
             <div class="mt-4">
+                <div>
+                    <span class="border border-white mb-4">
+                        <div class="btn-group mb-4">
+                            <button type="button" class="btn btn-primary border" onClick={backToBrowse}>Shop</button>
+                            <button type="button" class="btn btn-primary border" onClick={goToCart}>Cart</button>
+                        </div>
+                    </span>
+                </div>
                 <button type="button" class="btn btn-primary mb-4" onClick={backToBrowse}>Return</button>
                 <h2>My Cart</h2>
                 <div class="container">
@@ -246,11 +262,49 @@ function ProductCatalog() {
 
     }
 
+    const Confirmation = () => {
+        const confirmedItems = cart.map((el) => (
+            <div class="col mb-4">
+                <h1 class="m-3 text-center">{el.title}</h1>
+                <img class="card-img-top m-4 border" src={el.image} />
+            </div>
+        ));
+        const maskCreditCard = ((creditCardIDInput) => {
+            const creditCardLength = creditCardIDInput.length;
+            const maskLength = creditCardLength-4;
+            let creditCardID = creditCardIDInput;
+             for (let i = 0; i < creditCardLength; i++) {
+                if (i < maskLength) {
+                    creditCardID = creditCardID.replace(creditCardIDInput[i], '*');
+                }
+            }
+            return creditCardID;
+        });
+        return (
+            <div>
+                <h1 class="m-3">Order Confirmed!</h1>
+                <h1 class="m-3">Order items:</h1>
+                <div class="container">
+                    <div class="row row-cols-4">
+                        {confirmedItems}
+                    </div>
+                </div>
+                <div class="m-3">Order total: {cartTotal}</div>
+                <div class="m-3">
+                    <h1>Order details: </h1>
+                    <p>Name: {dataF.fullName}</p>
+                    <p>Email: {dataF.email}</p>
+                    <p>Ordered with Credit Card: {maskCreditCard(dataF.creditCard)}</p>
+                    <p>Shipping to {dataF.address} {dataF.city}, {dataF.state} {dataF.zip}</p>
+                </div>
+            </div>
+        )
+    }
     function ConfirmationView () {
         return (
             <div>
-                <p>Confirmation Function</p>
-                <button type="button" class="btn btn-primary" onClick={backToBrowse}>Back to Browse</button>
+                <Confirmation/>
+                <button type="button" class="btn btn-primary mt-4" onClick={backToBrowse}>Back to Browse</button>
             </div>
         );
     }
@@ -270,12 +324,6 @@ function ProductCatalog() {
 
     return (
         <div class="m-4">
-            <span class="border border-white">
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" onClick={backToBrowse}>Shop</button>
-                <button type="button" class="btn btn-primary" onClick={goToCart}>Cart</button>
-            </div>
-            </span>
             {view === 0 && <ShopView />}
             {view === 1 && <CartView />}
             {view === 2 && <ConfirmationView />}
