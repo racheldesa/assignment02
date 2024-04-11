@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {Products} from './Products';
 import {Categories} from './Categories';
 import items from "./products.json";
+import { useForm } from "react-hook-form";
 
 function ProductCatalog() {
     const [view, setView] = useState(0); // 0 --> Shop, 1 --> Cart, 2 --> Checkout
@@ -9,6 +10,8 @@ function ProductCatalog() {
     const [ProductsCategory, setProductsCategory] = useState(Products);
     const [cart, setCart] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
+    const {register, handleSubmit, formState: {errors}} = useForm();
+    const {dataF, setDataF} = useState({});
 
     // Shop function for Browse
     const Shop = () => {
@@ -101,13 +104,14 @@ function ProductCatalog() {
             </div>
         )
     }
+
     const Cart = () => {
         const cartItems = cart.map((el) => (
             <div class="row">
                 <div class="col">{el.title}</div>
                 <div class="col">{el.description}</div>
-                <div class="col">${el.price}</div>
                 <div class="col">{el.count}</div>
+                <div class="col">${el.price}</div>
                 <div class="col"><img class="img-fluid" src={el.image} width={150} /></div>
             </div>
         ));
@@ -116,6 +120,49 @@ function ProductCatalog() {
         )
     }
 
+    function Payment () {
+        const onSubmit = (data) => {
+            console.log( data );
+            setDataF(data);
+        }
+        return (
+            <div>
+                <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+                    <div className="form-group">
+                        <input {...register("fullName", {required: true})} placeholder="Full Name" className="form-control" />
+                        {errors.fullName && <p className="text-danger">Full Name is required.</p>}
+                    </div>
+                    <div className="form-group">
+                        <input {...register("email", {required: true, pattern: /^\S+@\S+$/i})} placeholder="Email" className="form-control" />
+                        {errors.email && <p className="text-danger">Email is required.</p>}
+                    </div>
+                    <div className="form-group">
+                        <input {...register("creditCard", {required: true})} placeholder="Credit Card" className="form-control" />
+                        {errors.creditCard && <p className="text-danger">Credit Card is required.</p>}
+                    </div>
+                    <div className="form-group">
+                        <input {...register("address", {required: true})} placeholder="Address" className="form-control" />
+                        {errors.address && <p className="text-danger">Address is required.</p>}
+                    </div>
+                    <div className="form-group">
+                        <input {...register("address2")} placeholder="Address 2" className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <input {...register("city", {required: true})} placeholder="City" className="form-control"/>
+                        {errors.city && <p className="text-danger">City is required.</p>}
+                    </div>
+                    <div className="form-group">
+                        <input {...register("state", {required: true})} placeholder="State" className="form-control"/>
+                        {errors.state && <p className="text-danger">State is required.</p>}
+                    </div>
+                    <div className="form-group">
+                        <input {...register("zip", {required: true})} placeholder="Zip"className="form-control" />
+                        {errors.zip && <p className="text-danger">Zip is required.</p>}
+                    </div>
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </form>
+            </div>);
+    }
     function goToCart() {
         setView(1);
     }
@@ -147,13 +194,21 @@ function ProductCatalog() {
                     <div class="row">
                         <div class="col">Name</div>
                         <div class="col">Description</div>
-                        <div class="col">Price</div>
                         <div class="col">Count</div>
+                        <div class="col">Price</div>
                         <div class="col"></div>
                     </div>
                     <Cart />
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col"></div>
+                        <div class="col">Total</div>
+                        <div class="col">${cartTotal}</div>
+                        <div class="col"></div>
+                    </div>
                 </div>
-                <div>Total: ${cartTotal}</div>
+                <h1>Payment Information</h1>
+                <Payment />
             </div>
         );
 
