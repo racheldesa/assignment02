@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {Products} from './Products';
 import {Categories} from './Categories';
-import items from "./products.json";
 import { useForm } from "react-hook-form";
 
 function ProductCatalog() {
     const [view, setView] = useState(0); // 0 --> Shop, 1 --> Cart, 2 --> Checkout
     const [query, setQuery] = useState('');
+    const [apiQuery, setApiQuery] = useState('');
     const [ProductsCategory, setProductsCategory] = useState(Products);
     const [cart, setCart] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
@@ -15,7 +15,7 @@ function ProductCatalog() {
 
     // Shop function for Browse
     const Shop = () => {
-        const listItems = items.map((el) => (
+        const listItems = ProductsCategory.map((el) => (
             <div class="col mb-4">
                 <div class="card h-100">
                     <div key={el.id}>
@@ -105,6 +105,7 @@ function ProductCatalog() {
         )
     }
 
+    // Function for Cart View
     const Cart = () => {
         const cartItems = cart.map((el) => (
             <div class="row mb-4">
@@ -119,7 +120,7 @@ function ProductCatalog() {
             cartItems
         )
     }
-
+    // Function for Payment in Cart View
     function Payment () {
         const onSubmit = (data) => {
             console.log( data );
@@ -192,6 +193,8 @@ function ProductCatalog() {
                 </form>
             </div>);
     }
+
+    // Functions to swtich views
     function goToCart() {
         setView(1);
     }
@@ -206,7 +209,7 @@ function ProductCatalog() {
         return (
             <div>
                 <div className="py-10">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleChange} />
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value={query} onChange={handleSearch} />
                     <Shop />
                 </div>
                 <button type="button" class="btn btn-primary" onClick={goToCart}>View Cart</button>
@@ -252,14 +255,18 @@ function ProductCatalog() {
         );
     }
 
-    const handleChange = (e) => {
+    const handleSearch = (e) => {
         setQuery(e.target.value);
         const results = Products.filter(eachProduct => {
-            if (e.target.value === "") return ProductsCategory;
+        if (e.target.value === "") {
+            return ProductsCategory;
+        } else {
             return eachProduct.title.toLowerCase().includes(e.target.value.toLowerCase())
+        } 
         });
         setProductsCategory(results);
     }
+    
 
     return (
         <div class="m-4">
