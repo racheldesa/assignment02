@@ -42,9 +42,7 @@ function ProductCatalog() {
             let newCart = cart.map((nextItem => {
                 if (nextItem.id === el.id) {
                     inCart = true;
-                    let newCartTotal = cartTotal;
-                    newCartTotal =  newCartTotal + el.price;
-                    setCartTotal(newCartTotal);
+                    setCartTotal(cartTotal + el.price);
                     return {
                         ...nextItem, count : nextItem.count + 1,
                     }
@@ -55,9 +53,7 @@ function ProductCatalog() {
             if (!inCart) {
                 let returnEl = el;
                 returnEl.count = 1;
-                let newCartTotal = cartTotal;
-                newCartTotal =  newCartTotal + returnEl.price;
-                setCartTotal(newCartTotal)
+                setCartTotal(cartTotal + returnEl.price)
                 setCart([...cart, returnEl]);
             } else {
                 setCart(newCart);
@@ -74,9 +70,7 @@ function ProductCatalog() {
                         removeObject = true;
                         return nextItem;
                     } else {
-                        let newCartTotal = cartTotal;
-                        newCartTotal =  newCartTotal - nextItem.price;
-                        setCartTotal(newCartTotal);
+                        setCartTotal(cartTotal - nextItem.price);
                         return {
                             ...nextItem, count : nextItem.count - 1
                         }
@@ -89,9 +83,7 @@ function ProductCatalog() {
                 if (removeObject) {
                     let hardCopy = [...cart];
                     hardCopy = hardCopy.filter((cartItem) => cartItem.id !== el.id);
-                    let newCartTotal = cartTotal;
-                    newCartTotal =  newCartTotal - el.price;
-                    setCartTotal(newCartTotal);
+                    setCartTotal(cartTotal - el.price);
                     setCart(hardCopy);
                 } else {
                     setCart(newCart);
@@ -111,16 +103,16 @@ function ProductCatalog() {
     }
     const Cart = () => {
         const cartItems = cart.map((el) => (
-            <div class="row" key={el.id}>
+            <div class="row">
                 <div class="col">{el.title}</div>
+                <div class="col">{el.description}</div>
                 <div class="col">${el.price}</div>
                 <div class="col">{el.count}</div>
-                <div class="col">{el.description}</div>
                 <div class="col"><img class="img-fluid" src={el.image} width={150} /></div>
             </div>
         ));
         return (
-            {cartItems}
+            cartItems
         )
     }
 
@@ -154,22 +146,20 @@ function ProductCatalog() {
                 <div class="container">
                     <div class="row">
                         <div class="col">Name</div>
+                        <div class="col">Description</div>
                         <div class="col">Price</div>
                         <div class="col">Count</div>
-                        <div class="col">Description</div>
                         <div class="col"></div>
                     </div>
                     <Cart />
                 </div>
-                <div>{Cart.cartItems}</div>
                 <div>Total: ${cartTotal}</div>
-                <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
         );
 
     }
 
-    function CheckoutView () {
+    function ConfirmationView () {
         return (
             <div>
                 <p>Confirmation Function</p>
@@ -193,12 +183,11 @@ function ProductCatalog() {
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" onClick={backToBrowse}>Shop</button>
                 <button type="button" class="btn btn-primary" onClick={goToCart}>Cart</button>
-                <button type="button" class="btn btn-primary" onClick={confirm}>Checkout</button>
             </div>
             </span>
             {view === 0 && <ShopView />}
             {view === 1 && <CartView />}
-            {view === 2 && <CheckoutView />}
+            {view === 2 && <ConfirmationView />}
         </div>
     );
 }
